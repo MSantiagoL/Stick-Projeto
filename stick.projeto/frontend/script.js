@@ -36,12 +36,11 @@ window.onclick = function (event) {
     }
 }
 
-// --- FUNÇÃO DE PRÉVIA DA FOTO (Ajustada para não falhar) ---
+// --- FUNÇÃO DE PRÉVIA DA FOTO ---
 function previewImage(event) {
     const input = event.target;
     const reader = new FileReader();
 
-    // Verificamos se existe mesmo um arquivo selecionado
     if (input.files && input.files[0]) {
         reader.onload = function (e) {
             const output = document.getElementById('imagePreview');
@@ -50,26 +49,49 @@ function previewImage(event) {
 
             if (output) {
                 output.src = e.target.result;
-                output.style.display = 'block'; // Mostra a imagem
+                output.style.display = 'block';
             }
-            if (text) text.style.display = 'none';    // Esconde o texto
-            if (icon) icon.style.display = 'none';   // Esconde o ícone
+            if (text) text.style.display = 'none';
+            if (icon) icon.style.display = 'none';
         };
 
         reader.readAsDataURL(input.files[0]);
     }
 }
 
-// --- FUNÇÃO DE PUBLICAR ---
-function publicarPost() {
+// --- FUNÇÃO DE PUBLICAR (AGORA CONECTADA AO BACKEND) ---
+async function publicarPost() {
+    const fileInput = document.getElementById('fileInput');
+    const captionInput = document.getElementById('postCaption');
     const preview = document.getElementById('imagePreview');
-    
-    // Verifica se a imagem tem um conteúdo válido (não está vazia)
-    if (!preview || !preview.src || preview.src.includes('window.location.origin') || preview.style.display === 'none') {
+
+    // 1. Validação: Verifica se tem foto
+    if (!fileInput.files[0]) {
         alert("Ops! Selecione uma foto primeiro para o Stick. 📸");
         return;
     }
 
-    alert("🚀 Show! Sua foto foi enviada para o Stick!");
-    fecharModal();
+    // 2. Prepara o "pacote" de envio (FormData)
+    const formData = new FormData();
+    formData.append('foto', fileInput.files[0]);
+    formData.append('legenda', captionInput.value);
+
+    try {
+        // 3. Envia para o seu servidor Node.js
+        const resposta = await fetch('http://localhost:3000/postar', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (resposta.ok) {
+            const resultado = await resposta.json();
+            alert("🚀 Sucesso: " + resultado.mensagem);
+            fecharModal();
+        } else {
+            alert("Erro ao enviar para o servidor. 😕");
+        }
+    } catch (erro) {
+        console.error("Erro na conexão:", erro);
+        alert("O servidor está desligado! Ligue o Node no terminal. 🧠🔌");
+    }
 }
