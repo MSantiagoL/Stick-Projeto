@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stick | Sua Rede Social Brasileira</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-blobs"></div>
+
+    <main class="glass-container">
+        <nav class="sidebar">
+            <h1 class="logo">Stick</h1>
+            <ul>
+                <li><i class="fas fa-home"></i> Início</li>
+                <li><i class="fas fa-search"></i> Explorar</li>
+                <li onclick="abrirModal()"><i class="fas fa-plus-square"></i> Criar</li>
+                <li><i class="fas fa-user"></i> Perfil</li>
+            </ul>
+        </nav>
+
+        <section class="feed">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Pesquisar no Stick...">
+                </div>
+            </div>
+
+            <div class="stories-container">
+                <div class="story">
+                    <div class="story-ring"><img src="https://i.pravatar.cc/150?u=1"></div><span>Seu Story</span>
+                </div>
+                <div class="story">
+                    <div class="story-ring"><img src="https://i.pravatar.cc/150?u=2"></div><span>ana_silva</span>
+                </div>
+                <div class="story">
+                    <div class="story-ring"><img src="https://i.pravatar.cc/150?u=3"></div><span>joao.dev</span>
+                </div>
+                <div class="story">
+                    <div class="story-ring"><img src="https://i.pravatar.cc/150?u=4"></div><span>bruna_m</span>
+                </div>
+            </div>
+
+            <div class="stick-profile-card centralizado">
+                <div class="profile-accent-line"></div>
+                <div class="profile-avatar-box">
+                    <img src="https://i.pravatar.cc/150?u=seu_usuario" alt="Avatar">
+                    <div class="status-indicator"></div>
+                </div>
+
+                <div class="profile-details-main">
+                    <div class="badge">STICK CREATOR</div>
+                    <h2>Seu Nome no Stick</h2>
+                    <span class="handle">@seunome</span>
+                    <p class="bio-text">📍 Rio de Janeiro | Criador do Stick 🚀<br>Transformando pixels em conexões reais.</p>
+
+                    <div class="custom-stats-bar">
+                        <div class="stat-pill"><strong>12</strong> posts</div>
+                        <div class="stat-pill"><strong>450</strong> seguidores</div>
+                        <div class="stat-pill"><strong>320</strong> seguindo</div>
+                    </div>
+                    <button class="action-pill-btn central">Editar Perfil</button>
+                </div>
+            </div>
+
+            <div class="profile-tabs">
+                <div class="tab active"><i class="fas fa-th"></i> Publicações</div>
+                <div class="tab"><i class="fas fa-play"></i> Vídeos</div>
+                <div class="tab"><i class="fas fa-id-badge"></i> Marcados</div>
+            </div>
+
+            <div class="profile-grid-container">
+                <div class="photo-grid">
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=500&auto=format&fit=crop"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1596422846543-b5c645849339?q=80&w=500&auto=format&fit=crop"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=500&auto=format&fit=crop"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-156465990ed95-4673c8404b2a?q=80&w=500&auto=format&fit=crop"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1543059152-42b350c0e7c3?q=80&w=500&auto=format&fit=crop"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1512412023212-f09450a81631?q=80&w=500&auto=format&fit=crop"></div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="right-sidebar">
+            <div class="widget">
+                <h4>Sugestões para você</h4>
+                <div class="suggestion-item">
+                    <img src="https://i.pravatar.cc/150?u=a" class="mini-avatar">
+                    <div class="user-info"><span>@ana_surf</span><small>Seguido por mateus_rj</small></div>
+                    <button class="follow-btn">Seguir</button>
+                </div>
+            </div>
+            <div class="widget">
+                <h4>Assuntos do Momento 🇧🇷</h4>
+                <div class="trend-item">
+                    <p>#StickBrasil</p><small>2.5k posts</small>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <button class="fab-button" onclick="abrirModal()"><i class="fas fa-plus"></i></button>
+
+    <div class="modal-overlay" id="modalPost">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Publicação</h3>
+                <button class="close-modal" onclick="fecharModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p id="uploadText">Clique para selecionar uma foto</p>
+                    <input type="file" id="fileInput" hidden accept="image/*" onchange="previewImage(event)">
+                    <img id="imagePreview" src="" style="display:none; width:100%; border-radius:15px; margin-top:10px; border: 1px solid rgba(255,255,255,0.2);">
+                </div>
+
+                <textarea id="postCaption" placeholder="Escreva uma legenda emocionante..."></textarea>
+                <button class="btn-publicar" onclick="publicarPost()">Publicar no Stick</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
