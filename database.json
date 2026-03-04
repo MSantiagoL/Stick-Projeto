@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "id": 1772651692034,
+      "url": "http://localhost:3000/uploads/1772651692029.jpg",
+      "legenda": "",
+      "comentarios": []
+    },
+    {
+      "id": 1772651634687,
+      "url": "http://localhost:3000/uploads/1772651634685.jpg",
+      "legenda": "Olhar fixo no primeiro Projeto",
+      "comentarios": []
+    },
+    {
+      "id": 1772651573705,
+      "url": "http://localhost:3000/uploads/1772651573701.jpg",
+      "legenda": "Minha primeira aplicação Fullstack",
+      "comentarios": []
+    },
+    {
+      "id": 1772651525264,
+      "url": "http://localhost:3000/uploads/1772651525248.jpg",
+      "legenda": "Está aqui ",
+      "comentarios": []
+    }
+  ]
+}

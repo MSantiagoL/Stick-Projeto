@@ -1,73 +1,93 @@
 const express = require('express');
-const cors = require('cors');
 const multer = require('multer');
-const path = require('path');
+const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
-
-// 1. Criar a pasta 'uploads' automaticamente se ela não existir
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
 app.use(cors());
 app.use(express.json());
 
-// Isso diz ao servidor: "Pode mostrar as fotos da pasta uploads para quem pedir"
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// 1. Caminho do Banco de Dados - AJUSTADO PARA SER MAIS SEGURO
+const DB_PATH = path.join(__dirname, '../../database.json');
 
-// Nova rota: Ela vai entregar uma lista com os nomes de todas as fotos
-app.get('/posts', (req, res) => {
-    const fs = require('fs');
-    const uploadDir = path.join(__dirname, 'uploads');
-    
-    fs.readdir(uploadDir, (err, files) => {
-        if (err) return res.status(500).json({ erro: "Erro ao ler fotos" });
-        
-        // Retorna o endereço completo de cada foto para o site
-        const posts = files.map(file => ({
-            url: `http://localhost:3000/uploads/${file}`,
-            legenda: "Stick do usuário" // Por enquanto, legenda fixa para teste
-        }));
-        res.json(posts);
-    });
-});
+// Função para garantir que o banco de dados existe e tem a estrutura correta
+const inicializarBanco = () => {
+    if (!fs.existsSync(DB_PATH)) {
+        console.log("📝 Criando novo arquivo database.json...");
+        fs.writeFileSync(DB_PATH, JSON.stringify({ posts: [] }, null, 2));
+    }
+};
+inicializarBanco();
 
-// 2. Configuração do Multer para salvar as fotos
+// 2. Garante que a pasta uploads existe
+const uploadsPath = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+}
+
+app.use('/uploads', express.static(uploadsPath));
+
+// 3. Configuração do Multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadDir);
+        cb(null, uploadsPath);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// 3. Rota de teste
-app.get('/', (req, res) => {
-    res.send('O Cérebro do Stick está vivo! 🧠');
+// --- ROTAS ---
+
+app.get('/posts', (req, res) => {
+    try {
+        const data = fs.readFileSync(DB_PATH, 'utf8');
+        const db = JSON.parse(data);
+        res.json(db.posts || []);
+    } catch (error) {
+        console.error("❌ Erro ao ler database.json:", error);
+        res.status(500).json({ erro: "Não foi possível carregar os posts." });
+    }
 });
 
-// 4. ROTA CORRIGIDA PARA POSTAGEM
 app.post('/postar', upload.single('foto'), (req, res) => {
     try {
-        const legenda = req.body.legenda;
-        const foto = req.file;
+        const { legenda } = req.body;
+        
+        if (!req.file) {
+            console.error("❌ Nenhuma foto recebida.");
+            return res.status(400).json({ erro: "Selecione uma imagem!" });
+        }
 
-        console.log("Legenda recebida:", legenda);
-        console.log("Foto salva em:", foto ? foto.path : "Nenhuma foto");
+        // URL que o navegador usará para exibir a foto
+        const fotoUrl = `http://localhost:3000/uploads/${req.file.filename}`;
 
-        res.json({ mensagem: "Postagem recebida com sucesso no Cérebro! 🚀" });
+        const data = fs.readFileSync(DB_PATH, 'utf8');
+        const db = JSON.parse(data);
+
+        const novoPost = {
+            id: Date.now(),
+            url: fotoUrl,
+            legenda: legenda || "",
+            comentarios: []
+        };
+
+        db.posts.unshift(novoPost); 
+        fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+
+        console.log("✅ Post salvo com sucesso!");
+        res.json(novoPost);
+
     } catch (error) {
-        console.error("Erro no servidor:", error);
-        res.status(500).json({ mensagem: "Erro interno no cérebro." });
+        console.error("❌ ERRO NO SERVIDOR:", error);
+        res.status(500).json({ erro: "Erro interno ao salvar." });
     }
 });
 
 app.listen(3000, () => {
-    console.log('🚀 Servidor rodando em http://localhost:3000');
+    console.log("🚀 Servidor do Stick online em http://localhost:3000");
+    console.log("📂 Local do Banco:", DB_PATH);
 });

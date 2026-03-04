@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div class="stick-profile-card centralizado">
+            <div class="stick-profile-card">
                 <div class="profile-avatar-box">
                     <img src="https://i.pravatar.cc/150?u=seu_usuario" alt="Avatar">
                     <div class="status-indicator"></div>
@@ -45,8 +45,7 @@
                     <div class="badge">STICK CREATOR</div>
                     <h2>Seu Nome no Stick</h2>
                     <span class="handle">@seunome</span>
-                    <p class="bio-text">📍 Rio de Janeiro | Criador do Stick 🚀<br>Transformando pixels em conexões
-                        reais.</p>
+                    <p class="bio-text">📍 Rio de Janeiro | Criador do Stick 🚀<br>Transformando pixels em conexões reais.</p>
 
                     <div class="custom-stats-bar">
                         <div class="stat-pill"><strong>12</strong> posts</div>
@@ -65,12 +64,15 @@
 
             <div class="profile-grid-container">
                 <div class="photo-grid">
-                    <div class="grid-item"><img
-                            src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=500"></div>
-                    <div class="grid-item"><img
-                            src="https://images.unsplash.com/photo-1596422846543-b5c645849339?q=80&w=500"></div>
-                    <div class="grid-item"><img
-                            src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=500"></div>
+                    <div class="grid-item">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=500" onclick="abrirLightbox(this.src, 'A beleza da natureza 🌿')">
+                    </div>
+                    <div class="grid-item">
+                        <img src="https://images.unsplash.com/photo-1596422846543-b5c645849339?q=80&w=500" onclick="abrirLightbox(this.src, 'Foco e determinação ⚡')">
+                    </div>
+                    <div class="grid-item">
+                        <img src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=500" onclick="abrirLightbox(this.src, 'Rio de Janeiro vibes ☀️')">
+                    </div>
                 </div>
             </div>
 
@@ -115,10 +117,16 @@
 
             <button class="btn-publicar" onclick="publicarPost()">Publicar no Stick</button>
         </div>
+    </div>
 
+    <div id="lightbox" class="modal-overlay" onclick="fecharLightbox()">
+        <span class="close-lightbox" onclick="fecharLightbox()">&times;</span>
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img id="imgExpandida" src="" alt="Foto Ampliada">
+            <p id="legendaExpandida" class="lightbox-caption"></p>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
