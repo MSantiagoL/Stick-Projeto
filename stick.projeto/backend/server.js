@@ -15,6 +15,26 @@ if (!fs.existsSync(uploadDir)) {
 app.use(cors());
 app.use(express.json());
 
+// Isso diz ao servidor: "Pode mostrar as fotos da pasta uploads para quem pedir"
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Nova rota: Ela vai entregar uma lista com os nomes de todas as fotos
+app.get('/posts', (req, res) => {
+    const fs = require('fs');
+    const uploadDir = path.join(__dirname, 'uploads');
+    
+    fs.readdir(uploadDir, (err, files) => {
+        if (err) return res.status(500).json({ erro: "Erro ao ler fotos" });
+        
+        // Retorna o endereço completo de cada foto para o site
+        const posts = files.map(file => ({
+            url: `http://localhost:3000/uploads/${file}`,
+            legenda: "Stick do usuário" // Por enquanto, legenda fixa para teste
+        }));
+        res.json(posts);
+    });
+});
+
 // 2. Configuração do Multer para salvar as fotos
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
